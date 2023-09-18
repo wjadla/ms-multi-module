@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="inventory-service" />
+        <module name="product-service" />
+        <module name="order-service" />
+        <module name="service-discovery" />
+        <module name="gateway" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="api-gateway" target="16" />
+      <module name="discovery-service" target="17" />
+      <module name="discovery-service-backend" target="17" />
+      <module name="discovery-service-frontend" target="17" />
+      <module name="discovery-services" target="17" />
+      <module name="orderservice" target="16" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="api-gateway" options="-parameters" />
+      <module name="discovery-service" options="-parameters" />
+      <module name="discovery-service-backend" options="-parameters" />
+      <module name="discovery-service-frontend" options="-parameters" />
+      <module name="discovery-services" options="-parameters" />
+      <module name="gateway" options="-parameters" />
+      <module name="inventory-service" options="-parameters" />
+      <module name="microservices-new" options="-parameters" />
+      <module name="order-service" options="-parameters" />
+      <module name="orderservice" options="-parameters" />
+      <module name="product-service" options="-parameters" />
+      <module name="service-discovery" options="-parameters" />
+    </option>
+  </component>
+</project>
