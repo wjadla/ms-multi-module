@@ -3,6 +3,7 @@ package com.spring.orderservice.service;
 import com.spring.orderservice.dto.InventoryResponse;
 import com.spring.orderservice.dto.OrderLineItemsDto;
 import com.spring.orderservice.dto.OrderRequest;
+import com.spring.orderservice.event.OrderListEvent;
 import com.spring.orderservice.model.Order;
 import com.spring.orderservice.model.OrderLineItems;
 import com.spring.orderservice.repository.OrderRepository;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Tracer;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -29,6 +31,8 @@ public class OrderService {
     private final WebClient.Builder webClient;
 
     private final Tracer tracer;
+
+    private final KafkaTemplate<String, OrderListEvent> kafkaTemplate;
     public String placeOrder(OrderRequest request){
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
@@ -44,7 +48,6 @@ public class OrderService {
                 .stream().map(OrderLineItems::getSkuCode).toList();
 
         log.info("Calling inventory service");
-
         //todo : zipkin span
         Span inventoryServiceLookup = tracer.nextSpan().name("InventoryServiceLookup");
         try {
@@ -64,6 +67,8 @@ public class OrderService {
 
         if (allProductInStock){
             orderRepository.save(order);
+            kafkaTemplate.send("notificationTemplate",
+                    new OrderListEvent(order.getOrderNumber()));
             log.info("order {} have been saved ", order.getId());
             return "order placed with success";
         } else {
